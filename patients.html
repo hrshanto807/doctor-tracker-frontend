@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patient Management - Doctor Tracker</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230d9488'><path d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z'/></svg>" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- 100% External Stylesheet -->
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <!-- Mobile Backdrop Overlay -->
+  <div id="sidebarBackdrop" class="modal-overlay sidebar-backdrop"></div>
+
+  <div class="app-wrapper">
+    <!-- ==========================================
+         SIDEBAR NAVIGATION
+         ========================================== -->
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="brand-logo">
+          <div class="brand-icon">
+            <i class="fa-solid fa-notes-medical"></i>
+          </div>
+          <span>Doctor Tracker</span>
+        </a>
+      </div>
+
+      <ul class="sidebar-nav">
+        <div class="nav-section-title">Core Management</div>
+        <li class="nav-item">
+          <a href="dashboard.html" class="nav-link-custom">
+            <span><i class="fa-solid fa-chart-pie nav-icon"></i> Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="doctors.html" class="nav-link-custom">
+            <span><i class="fa-solid fa-user-doctor nav-icon"></i> Doctors</span>
+            <span id="sidebarDocCount" class="nav-badge">0</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="patients.html" class="nav-link-custom active">
+            <span><i class="fa-solid fa-bed-pulse nav-icon"></i> Patients</span>
+            <span id="sidebarPatientCount" class="nav-badge badge-primary">0</span>
+          </a>
+        </li>
+
+        <div class="nav-section-title">Analytics & Tools</div>
+        <li class="nav-item">
+          <a href="dashboard.html" class="nav-link-custom">
+            <span><i class="fa-solid fa-chart-line nav-icon"></i> Analytics Overview</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="user-card-mini">
+          <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200" alt="Admin" class="user-avatar-mini" />
+          <div class="user-info-mini">
+            <h6 class="profile-name">Admin User</h6>
+            <span class="profile-role">Super Admin</span>
+          </div>
+          <button type="button" onclick="handleLogout()" class="btn btn-link text-light p-1" title="Sign Out">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==========================================
+         MAIN CONTENT AREA
+         ========================================== -->
+    <main class="app-main">
+      <!-- Topbar Header -->
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <button id="sidebarToggleBtn" class="topbar-toggle-btn" aria-label="Toggle Navigation">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="topbar-search">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" placeholder="Global search..." onkeydown="if(event.key==='Enter') { const s = document.getElementById('patientSearchInput'); if(s) { s.value = this.value; s.dispatchEvent(new Event('input')); } }" />
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <button type="button" class="btn-custom btn-primary-custom" onclick="openAddPatientModal()">
+            <i class="fa-solid fa-user-plus"></i> Admit New Patient
+          </button>
+
+          <div class="dropdown">
+            <button class="profile-dropdown-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200" alt="Admin" class="profile-avatar" />
+              <div class="d-none d-md-block text-start">
+                <div class="profile-name">Admin User</div>
+                <div class="profile-role">Hospital Administrator</div>
+              </div>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 py-2">
+              <li><h6 class="dropdown-header">Admin Navigation</h6></li>
+              <li><a class="dropdown-item" href="dashboard.html"><i class="fa-solid fa-house-chimney me-2 text-primary"></i> Dashboard</a></li>
+              <li><a class="dropdown-item" href="doctors.html"><i class="fa-solid fa-user-doctor me-2 text-primary"></i> Doctors Directory</a></li>
+              <li><a class="dropdown-item" href="patients.html"><i class="fa-solid fa-bed-pulse me-2 text-primary"></i> Patients List</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="javascript:void(0)" onclick="handleLogout()"><i class="fa-solid fa-power-off me-2"></i> Log Out</a></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        <!-- Page Title & Header Actions -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Patient Management</h1>
+            <p class="page-subtitle">Track patient admissions, clinical health conditions, assigned medical specialists, and room allocations.</p>
+          </div>
+          <div class="page-actions">
+            <button type="button" class="btn-custom btn-primary-custom" onclick="openAddPatientModal()">
+              <i class="fa-solid fa-user-plus"></i> Admit Patient
+            </button>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             SEARCH & MULTI-FILTER TOOLBAR
+             (Condition, Doctor, Date-wise, Search)
+             ========================================== -->
+        <div class="toolbar-card">
+          <div class="filter-grid">
+            <!-- Search Input -->
+            <div>
+              <label class="form-label-custom">Search Patients</label>
+              <div class="position-relative">
+                <input type="text" id="patientSearchInput" class="form-control-custom ps-5" placeholder="Search by name, code, contact, doctor..." />
+                <i class="fa-solid fa-magnifying-glass input-icon-left"></i>
+              </div>
+            </div>
+
+            <!-- Patient Condition Filter -->
+            <div>
+              <label class="form-label-custom">Patient Condition</label>
+              <select id="patientConditionFilter" class="form-select-custom">
+                <option value="">All Conditions</option>
+                <option value="Critical">Critical</option>
+                <option value="Stable">Stable</option>
+                <option value="Under Observation">Under Observation</option>
+                <option value="Recovered">Recovered</option>
+              </select>
+            </div>
+
+            <!-- Doctor Filter -->
+            <div>
+              <label class="form-label-custom">Assigned Doctor</label>
+              <select id="patientDoctorFilter" class="form-select-custom">
+                <option value="">All Doctors</option>
+              </select>
+            </div>
+
+            <!-- Date-wise Filter (Admission Date) -->
+            <div>
+              <label class="form-label-custom">Admitted Since (Date)</label>
+              <input type="date" id="patientDateFilter" class="form-control-custom" />
+            </div>
+
+            <!-- Reset Filters -->
+            <div>
+              <label class="form-label-custom d-none d-md-block">&nbsp;</label>
+              <button type="button" id="patientResetFiltersBtn" class="btn-custom btn-outline-custom w-100" title="Reset all filters">
+                <i class="fa-solid fa-arrow-rotate-left"></i> Reset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             PATIENTS DATA TABLE
+             ========================================== -->
+        <div class="card-custom">
+          <div class="card-header-custom">
+            <h5 class="card-title-custom">
+              <i class="fa-solid fa-bed-pulse text-primary"></i> Admitted Patients Directory
+            </h5>
+            <span id="patientCountDisplay" class="badge bg-light text-muted fw-semibold py-2 px-3 border">
+              Loading patients...
+            </span>
+          </div>
+
+          <div class="table-responsive-custom">
+            <table class="table-custom">
+              <thead>
+                <tr>
+                  <th>Patient ID</th>
+                  <th>Patient Details</th>
+                  <th>Assigned Doctor</th>
+                  <th>Phone Contact</th>
+                  <th>Condition Status</th>
+                  <th>Room / Bed</th>
+                  <th>Admission Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="patientsTableBody">
+                <!-- Populated via assets/js/patients.js -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination Bar -->
+          <div class="pagination-wrapper" id="patientPaginationWrapper">
+            <div class="pagination-info">
+              Records pagination and query management
+            </div>
+            <div id="patientPaginationContainer">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ==========================================
+       MODAL: ADMIT / EDIT PATIENT
+       ========================================== -->
+  <div class="modal-overlay" id="patientModal">
+    <div class="modal-dialog-custom">
+      <div class="modal-header-custom">
+        <h5 class="modal-title-custom" id="patientModalTitle">Admit New Patient</h5>
+        <button type="button" class="modal-close-btn" data-dismiss="modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="patientForm">
+        <input type="hidden" id="patientIdInput" />
+        <div class="modal-body-custom">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label-custom">Patient Full Name <span class="text-danger">*</span></label>
+              <div class="position-relative">
+                <input type="text" id="patientNameInput" class="form-control-custom ps-5" placeholder="e.g. Clara Oswald" required />
+                <i class="fa-solid fa-user input-icon-left"></i>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label-custom">Age <span class="text-danger">*</span></label>
+              <input type="number" id="patientAgeInput" class="form-control-custom" min="1" max="120" value="35" required />
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label-custom">Gender <span class="text-danger">*</span></label>
+              <select id="patientGenderSelect" class="form-select-custom" required>
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label-custom">Phone Number <span class="text-danger">*</span></label>
+              <div class="position-relative">
+                <input type="tel" id="patientPhoneInput" class="form-control-custom ps-5" placeholder="+1 (555) 000-0000" required />
+                <i class="fa-solid fa-phone input-icon-left"></i>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label-custom">Assigned Doctor <span class="text-danger">*</span></label>
+              <select id="patientDoctorSelect" class="form-select-custom" required>
+                <option value="">Select Attending Physician...</option>
+                <!-- Populated via JS -->
+              </select>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label-custom">Condition Status <span class="text-danger">*</span></label>
+              <select id="patientConditionSelect" class="form-select-custom" required>
+                <option value="Stable">Stable</option>
+                <option value="Critical">Critical</option>
+                <option value="Under Observation">Under Observation</option>
+                <option value="Recovered">Recovered</option>
+              </select>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label-custom">Room / Bed Assignment</label>
+              <input type="text" id="patientRoomInput" class="form-control-custom" placeholder="e.g. Ward 3B, Bed 04" />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label-custom">Admission Date (Date-wise Tracking)</label>
+              <input type="date" id="patientAdmissionDateInput" class="form-control-custom" />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label-custom">Diagnosis / Clinical Notes</label>
+              <textarea id="patientNotesInput" class="form-control-custom" rows="2" placeholder="Symptoms, treatment plan, or medical observations..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer-custom">
+          <button type="button" class="btn-custom btn-outline-custom" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn-custom btn-primary-custom">
+            <i class="fa-solid fa-floppy-disk"></i> Save Patient Record
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: DELETE PATIENT CONFIRMATION
+       ========================================== -->
+  <div class="modal-overlay" id="deletePatientModal">
+    <div class="modal-dialog-custom modal-dialog-sm">
+      <div class="modal-header-custom border-0 pb-0">
+        <h5 class="modal-title-custom text-danger">
+          <i class="fa-solid fa-triangle-exclamation me-1"></i> Delete Patient Record
+        </h5>
+        <button type="button" class="modal-close-btn" data-dismiss="modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="modal-body-custom pt-3">
+        <p class="text-muted mb-2">
+          Are you sure you want to permanently delete patient <strong id="deletePatientName" class="text-dark">record</strong>?
+        </p>
+        <div class="p-3 bg-danger-subtle text-danger rounded-3 small">
+          <i class="fa-solid fa-circle-exclamation me-1"></i>
+          This action will remove the patient admission data from the database and doctor workload metrics.
+        </div>
+      </div>
+
+      <div class="modal-footer-custom border-0">
+        <button type="button" class="btn-custom btn-outline-custom" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn-custom btn-danger-custom" onclick="confirmDeletePatient()">
+          <i class="fa-solid fa-trash-can"></i> Yes, Delete Patient
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- External CDNs -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- App Core JS -->
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/patients.js"></script>
+</body>
+</html>

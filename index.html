@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doctor Tracker - Portal</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230d9488'><path d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z'/></svg>" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- 100% External Stylesheet -->
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script>
+    const user = localStorage.getItem("doc_tracker_auth_user");
+    if (user) {
+      window.location.replace("dashboard.html");
+    } else {
+      window.location.replace("login.html");
+    }
+  </script>
+</head>
+<body class="index-body">
+  <div class="text-center p-4">
+    <div class="brand-icon index-logo mx-auto">
+      <i class="fa-solid fa-notes-medical"></i>
+    </div>
+    <h4 class="fw-bold mb-2">Doctor Tracker</h4>
+    <p class="text-muted mb-4">Redirecting to portal...</p>
+    <div class="d-flex gap-2 justify-content-center">
+      <a href="dashboard.html" class="btn-custom btn-primary-custom">Go to Dashboard</a>
+      <a href="login.html" class="btn-custom btn-outline-custom">Go to Login</a>
+    </div>
+  </div>
+</body>
+</html>
